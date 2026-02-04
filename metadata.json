@@ -1,0 +1,8 @@
+{
+  "name": "SoulBind: The Reconciliation Portal",
+  "description": "A heartfelt, AI-powered platform designed to help you apologize, reflect, and win back your significant other through personalized messages and emotional intelligence.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
