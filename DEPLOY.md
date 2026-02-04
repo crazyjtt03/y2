@@ -6,12 +6,28 @@
 
 在开始之前，请确保你的代码已经推送到 GitHub 仓库。
 
-1.  **提交代码**: 确保最新的代码（包括我刚刚创建的 `Dockerfile` 和 `nginx.conf`）都已经提交并推送到你的 GitHub 仓库。
+## 1. 准备工作
+
+你的代码现在已经在这个文件夹里准备好了，并且我已经帮你初始化了本地 Git 仓库。
+
+你需要做的是将它推送到 GitHub：
+
+1.  **在 GitHub 上新建仓库**:
+    *   访问 [GitHub New Repository](https://github.com/new)。
+    *   输入仓库名 (例如 `soulbind-portal`)。
+    *   **不要**勾选 "Initialize with README" 或其他初始化选项 (创建一个空仓库)。
+    *   点击 "Create repository"。
+
+2.  **推送代码**:
+    在当前项目目录下，运行你在 GitHub 页面上看到的命令（或者复制下面的命令，替换你的仓库地址）：
+
     ```bash
-    git add .
-    git commit -m "Add Dockerfile and deployment config"
-    git push
+    git remote add origin https://github.com/YOUR_USERNAME/soulbind-portal.git
+    git branch -M main
+    git push -u origin main
     ```
+
+    *(如果你的 Git 默认分支是 `master`，请将上面的 `main` 替换为 `master`)*
 
 ## 2. 在 Claw Cloud 上创建项目
 
