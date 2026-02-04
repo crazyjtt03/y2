@@ -133,7 +133,11 @@ const App: React.FC = () => {
     }, 1200);
   };
 
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
   const triggerSecretSetup = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+
     setClickCount(prev => {
       const nextCount = prev + 1;
       if (nextCount >= 5) {
@@ -142,8 +146,9 @@ const App: React.FC = () => {
       }
       return nextCount;
     });
-    const timeout = setTimeout(() => setClickCount(0), 1000);
-    return () => clearTimeout(timeout);
+    
+    // Reset count if no clicks for 3 seconds
+    timerRef.current = setTimeout(() => setClickCount(0), 3000);
   }, []);
 
   return (
