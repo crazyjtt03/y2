@@ -18,32 +18,54 @@ app.use(express.json({ limit: '50mb' })); // Allow large payloads for images/mus
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // Initialize data file if not exists
-if (!fs.existsSync(DATA_FILE)) {
-    const defaultData = {
-        nickname: '宝贝',
-        letter: '此时此刻，我的心里乱极了...',
-        promises: ['再生气也不冷战...', '学会换位思考...', '每天都要给你一个早安吻...'],
-        photos: [],
-        showPhotos: true,
-        showPromises: true,
-        bgMusicUrl: '',
-        showMusic: true
-    };
-    fs.writeFileSync(DATA_FILE, JSON.stringify(defaultData));
+const DEFAULT_DATA = {
+    nickname: '宝贝',
+    letter: '此时此刻，我的心里乱极了...',
+    promises: ['再生气也不冷战...', '学会换位思考...', '每天都要给你一个早安吻...'],
+    photos: [],
+    showPhotos: true,
+    showPromises: true,
+    bgMusicUrl: '',
+    showMusic: true
+};
+
+// Helper: Ensure valid data exists
+function ensureDataFile() {
+    let shouldWrite = false;
+    if (!fs.existsSync(DATA_FILE)) {
+        shouldWrite = true;
+    } else {
+        try {
+            const content = fs.readFileSync(DATA_FILE, 'utf8');
+            if (!content || content.trim() === '') {
+                shouldWrite = true;
+            } else {
+                JSON.parse(content); // Test parse
+            }
+        } catch (e) {
+            console.warn('Data file corrupted or empty, resetting to default.');
+            shouldWrite = true;
+        }
+    }
+
+    if (shouldWrite) {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(DEFAULT_DATA, null, 2));
+    }
 }
+
+// Initialize on startup
+ensureDataFile();
 
 // API Routes
 app.get('/api/story', (req, res) => {
     try {
-        if (fs.existsSync(DATA_FILE)) {
-            const data = fs.readFileSync(DATA_FILE, 'utf8');
-            res.json(JSON.parse(data));
-        } else {
-            res.json({});
-        }
+        ensureDataFile(); // Double check before read
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        res.json(JSON.parse(data));
     } catch (err) {
         console.error('Error reading story data:', err);
-        res.status(500).json({ error: 'Failed to read data' });
+        // Fallback to default in memory if file read fails hard
+        res.json(DEFAULT_DATA);
     }
 });
 

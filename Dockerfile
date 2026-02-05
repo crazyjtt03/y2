@@ -33,7 +33,7 @@ COPY --from=builder /app/dist ./dist
 COPY server.js ./
 
 # Create data file with permissions (optional but good practice)
-RUN touch story.json && chmod 666 story.json
+# RUN touch story.json && chmod 666 story.json
 
 ENV PORT=80
 EXPOSE 80
