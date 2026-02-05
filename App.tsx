@@ -100,7 +100,39 @@ const App: React.FC = () => {
     setStars(Array.from({ length: 35 }).map((_, i) => i));
   }, []);
 
-  // ... (handleScreenClick logic unchanged)
+  // Handle click effects and music autoplay
+  const handleScreenClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Add heart effect
+    const newHeart = {
+      id: Date.now(),
+      x: e.clientX,
+      y: e.clientY
+    };
+    setTapHearts(prev => [...prev, newHeart]);
+    setTimeout(() => {
+      setTapHearts(prev => prev.filter(h => h.id !== newHeart.id));
+    }, 1500);
+
+    // Auto play music on first interaction if enabled
+    if (story.showMusic && audioRef.current && !isMusicPlaying) {
+      audioRef.current.play()
+        .then(() => setIsMusicPlaying(true))
+        .catch(err => console.log("Audio play failed:", err));
+    }
+  };
+
+  const toggleMusic = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!audioRef.current) return;
+
+    if (isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+    } else {
+      audioRef.current.play().catch(console.error);
+      setIsMusicPlaying(true);
+    }
+  };
 
   const handleSave = () => {
     // Save data to server
