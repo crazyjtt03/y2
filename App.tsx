@@ -482,6 +482,9 @@ const SetupView: React.FC<{
     setStory({ ...story, photos: next });
   };
 
+  const addPhoto = () => setStory({ ...story, photos: [...story.photos, { url: '', caption: '' }] });
+  const removePhoto = (idx: number) => setStory({ ...story, photos: story.photos.filter((_, i) => i !== idx) });
+
   const handleFileUpload = (idx: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -647,11 +650,20 @@ const SetupView: React.FC<{
                 {story.showPhotos ? <Eye size={14} /> : <EyeOff size={14} />}
                 {story.showPhotos ? '已启用' : '已隐藏'}
               </button>
+              <button onClick={addPhoto} className="p-2.5 bg-rose-50 text-rose-500 rounded-full hover:bg-rose-100 transition-colors">
+                <Plus size={24} />
+              </button>
             </div>
             {story.showPhotos && (
               <div className="grid grid-cols-1 gap-6 animate-fade-in">
                 {story.photos.map((ph, i) => (
-                  <div key={i} className="flex flex-col gap-4 p-5 bg-gray-50 rounded-[35px] relative">
+                  <div key={i} className="flex flex-col gap-4 p-5 bg-gray-50 rounded-[35px] relative group">
+                    <button
+                      onClick={() => removePhoto(i)}
+                      className="absolute -top-3 -right-3 p-2 bg-white text-gray-400 hover:text-red-500 rounded-full shadow-sm hover:shadow-md transition-all opacity-0 group-hover:opacity-100 z-10"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                     <div className="flex gap-2">
                       <div className="relative flex-1">
                         <input
