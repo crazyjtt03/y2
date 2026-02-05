@@ -3,32 +3,39 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files first to leverage cache
+# Copy package files
 COPY package.json ./
-# If you have a package-lock.json, uncomment the next line
-# COPY package-lock.json ./
 
-# Install dependencies (using clean install if package-lock exists, otherwise install)
+# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy source
 COPY . .
 
-# Build the application
+# Build frontend
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM node:20-alpine
 
-# Copy the build output from the builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Copy custom nginx configuration
-# Assuming nginx.conf is in the root directory of your project
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy package files
+COPY package.json ./
 
-# Expose port 80
+# Install production dependencies
+RUN npm install --production
+
+# Copy built frontend from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Copy backend server code
+COPY server.js ./
+
+# Create data file with permissions (optional but good practice)
+RUN touch story.json && chmod 666 story.json
+
+ENV PORT=80
 EXPOSE 80
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "server.js"]
