@@ -82,8 +82,11 @@ const App: React.FC = () => {
     fetch('/api/story')
       .then(res => res.json())
       .then(data => {
-        if (Object.keys(data).length > 0) {
-          setStory(data);
+        if (data && typeof data === 'object') {
+          setStory(prev => ({
+            ...prev,
+            ...data
+          }));
         }
       })
       .catch(err => console.error('Failed to load story:', err));
@@ -500,8 +503,8 @@ const SetupView: React.FC<{
               <button
                 onClick={toggleMusic}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${story.showMusic
-                    ? 'bg-rose-100 text-rose-600'
-                    : 'bg-gray-100 text-gray-400'
+                  ? 'bg-rose-100 text-rose-600'
+                  : 'bg-gray-100 text-gray-400'
                   }`}
               >
                 {story.showMusic ? <Eye size={14} /> : <EyeOff size={14} />}
@@ -566,8 +569,8 @@ const SetupView: React.FC<{
                 <button
                   onClick={togglePromises}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${story.showPromises
-                      ? 'bg-rose-100 text-rose-600'
-                      : 'bg-gray-100 text-gray-400'
+                    ? 'bg-rose-100 text-rose-600'
+                    : 'bg-gray-100 text-gray-400'
                     }`}
                 >
                   {story.showPromises ? <Eye size={14} /> : <EyeOff size={14} />}
@@ -605,8 +608,8 @@ const SetupView: React.FC<{
               <button
                 onClick={togglePhotos}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${story.showPhotos
-                    ? 'bg-rose-100 text-rose-600'
-                    : 'bg-gray-100 text-gray-400'
+                  ? 'bg-rose-100 text-rose-600'
+                  : 'bg-gray-100 text-gray-400'
                   }`}
               >
                 {story.showPhotos ? <Eye size={14} /> : <EyeOff size={14} />}
